@@ -1,18 +1,23 @@
 import re
-import timeit
 
-bib_items = r"@(\w+)\{((.*\n)*?)\}"
+bib_parse_exp = r"@(?P<type>\w+)\{(?P<id>[\w.:]+),\n(?P<content>(.*\n*)+?)\}"
+content_parse_exp = r"\s+(?P<key>\w+)\s+=\s\{(?P<value>.*)\}"
 
-test_r = r'(@\w+\{(.+\n)+?\})'
-avg_time = 0
 
-for i in range(10000):
-    time_start = timeit.default_timer()
+f = open('biblio.bib', 'r', encoding='utf-8')
+data = f.read()
+parse_data = re.finditer(bib_parse_exp, data)
 
-    f = open('biblio.bib', 'r', encoding='utf-8')
+bib_list = list()
 
-    data = f.read()
+for item in parse_data:
+    tmp = dict()
+    tmp['type'] = item['type']
+    tmp['id'] = item['id']
+    tmp_parse = re.finditer(content_parse_exp, item.group('content'))
+    for i in tmp_parse:
+        tmp[i['key']] = i['value']
+    bib_list.append(tmp)
 
-    parse_data = re.findall(test_r, data)
-    avg_time += timeit.default_timer() - time_start
-print(avg_time / 10000)
+print(bib_list)
+
