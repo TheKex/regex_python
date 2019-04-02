@@ -19,5 +19,13 @@ for item in parse_data:
         tmp[i['key']] = i['value']
     bib_list.append(tmp)
 
-print(bib_list)
+
+
+
+
+
+for i in bib_list:
+    for j in i:
+        print(j, '=', i[j])
+    break;
 
