@@ -51,3 +51,4 @@ if __name__ == "__main__":
     path = 'biblio.bib'
     bib = parse_bib_lib(path)
     print_bibtex(bib)
+
