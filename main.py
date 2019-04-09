@@ -3,11 +3,11 @@ import re
 FORMAT_DICT = {
     'Author': '{Author} ',
     'Title': '{Title} ',
-    'Journal': '// {Journal} ',
-    'Year': '.-  {Year} ',
-    'Publisher': '{Publisher} ',
-    'Address': '{Address} ',
-    'Pages': '.- p  {Pages} ',
+    'Journal': '// {Journal}',
+    'Year': '.- {Year}',
+    'Publisher': ' {Publisher}',
+    'Address': ' {Address}',
+    'Pages': '.- p  {Pages}',
     'Volume': '.- vol. {Volume}'
 }
 bib_parse_exp = r"@(?P<type>\w+)\{(?P<id>[\w.:]+),\n(?P<content>(.*\n*)+?)\}"
@@ -15,7 +15,7 @@ content_parse_exp = r"\s+(?P<key>\w+)\s+=\s\{(?P<value>.*)\}"
 
 
 def parse_authors(_str):
-    return _str.replace(',', '').replace(' and', ',')
+    return ', '.join(_str)
 
 
 def parse_bib_lib(bibtex_path):
@@ -32,6 +32,8 @@ def parse_bib_lib(bibtex_path):
         tmp_parse = re.finditer(content_parse_exp, item.group('content'))
         for i in tmp_parse:
             tmp[i['key']] = i['value'].strip()
+        if tmp.get('Author'):
+            tmp['Author'] = re.split(r"\s?and\s?", tmp['Author'].replace(',', ''))
         bib_list.append(tmp)
     return bib_list
 
